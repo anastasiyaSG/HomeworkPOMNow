@@ -1,6 +1,8 @@
 ﻿using HomeworkPOM.Factories;
 using NUnit.Framework;
+using NUnit.Framework.Interfaces;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
 using SeleniumExtras.PageObjects;
 using System;
@@ -17,6 +19,9 @@ namespace HomeworkPOM.Tests.GoogleSearch01
         [SetUp]
         public void Setup()
         {
+            ChromeOptions options = new ChromeOptions();
+            options.AddArgument("-headless");
+
             Initialize();
             Driver.Navigate().GoToUrl("http://automationpractice.com/index.php/");
 
@@ -25,7 +30,16 @@ namespace HomeworkPOM.Tests.GoogleSearch01
         }
         [TearDown]
         public void TearDown()
-        { Driver.Quit(); }
+        { 
+
+       if (TestContext.CurrentContext.Result.Outcome != ResultState.Success)
+            {
+                var sceenshot = ((ITakesScreenshot)Driver).GetScreenshot();
+                sceenshot.SaveAsFile($"{TestContext.CurrentContext.Test.FullName}", ScreenshotImageFormat.Png);
+            }
+
+
+            Driver.Quit(); }
 
         [Test]
         public void RegisterWithoutFirstName()

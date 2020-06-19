@@ -5,6 +5,7 @@ using SeleniumExtras.PageObjects;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using NUnit.Framework.Interfaces;
 
 namespace HomeworkPOM.Tests.DemoQA05
 {
@@ -24,7 +25,13 @@ namespace HomeworkPOM.Tests.DemoQA05
         }
         [TearDown]
         public void TearDown()
-        { Driver.Quit(); }
+        {
+            if (TestContext.CurrentContext.Result.Outcome != ResultState.Success)
+            {
+                var sceenshot = ((ITakesScreenshot)Driver).GetScreenshot();
+                sceenshot.SaveAsFile($"{TestContext.CurrentContext.Test.FullName}.png", ScreenshotImageFormat.Png);
+            }
+            Driver.Quit(); }
 
         [Test]
         public void ElementYIsSame_When_DragAndDropOnlyXDiagonally()
